@@ -205,6 +205,21 @@ class PunctProcessor(CnerProcessor):
         return ["X",'B-：', 'B-…', 'O', 'B-book', 'M-book', 'B-；', 'B-，', 'B-。', 'B-！',
                 'E-book', 'B-、', 'B-？', "[START]", "[END]"]
 
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            if i == 0:
+                continue
+            guid = "%s-%s" % (set_type, i)
+            text_a= line['words']
+            # BIOS
+            labels = []
+            for x in line['labels']:
+                labels.append(x)
+            examples.append(InputExample(guid=guid, text_a=text_a, labels=labels))
+        return examples
+
 
 class CluenerProcessor(DataProcessor):
     """Processor for the chinese ner data set."""
