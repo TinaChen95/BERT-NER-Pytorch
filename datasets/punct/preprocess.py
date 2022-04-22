@@ -2,6 +2,7 @@
 import re
 from collections import Counter
 import random
+import numpy as np
 
 
 valid_symbols_re = re.compile('[\w，。：！？…；、《》]')
@@ -59,13 +60,41 @@ def to_bmes(text):
     return ''.join(res)
 
 
+def generate_line(text, min_len=5, max_len=128):
+    length = min_len + int((max_len - min_len) * np.random.beta(2, 6))
+    # print(length)
+    length = min(len(text)-1, length)
+    start = random.randint(0, len(text)-length-1)
+    end = start + length
+    # print(text, len(text), start, end)
+    if text[end].isalpha():
+        text = text[start: end]
+    else:
+        text = text[start: end+1]
+    text = re.sub('^[^《]*》', '', text)
+    text = re.sub('《[^》]*$', '', text)
+    return text
+
+
+def count_words(text):
+    return len(re.findall('\w', text))
+
+
 def preprocess(infile):
     data = []
+    lengths = Counter()
     with open(infile, 'r', encoding='utf8') as f:
         for line in f.readlines():
-            bmes = to_bmes(line)
-            if bmes:
-                data.append(bmes+'\n')
+            if count_words(line) < 10:
+                continue
+            nsamples = int(len(line) / 50) + 1
+            for _ in range(nsamples):
+                subline = generate_line(line)
+                lengths[len(subline)] += 1
+                bmes = to_bmes(subline)
+                if bmes:
+                    data.append(bmes+'\n')
+    print(lengths.items())
     return data
 
 
@@ -87,8 +116,9 @@ def split(data):
 
 
 data = preprocess('白鹿原.txt')
-labels = {i.split()[1] for line in data for i in line.split('\n') if i.strip()}
+labels = Counter([i.split()[1] for line in data for i in line.split('\n') if i.strip()])
 train, dev, test = split(data)
 write(train, dev, test)
 
 print(labels)
+print(len(train), len(dev), len(test))
