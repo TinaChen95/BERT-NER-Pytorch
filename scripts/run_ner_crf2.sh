@@ -17,7 +17,7 @@ python run_ner_crf.py \
   --per_gpu_train_batch_size=24 \
   --per_gpu_eval_batch_size=24 \
   --learning_rate=3e-5 \
-  --crf_learning_rate=1e-4 \
+  --crf_learning_rate=1e-3 \
   --num_train_epochs=4.0 \
   --logging_steps=-1 \
   --save_steps=-1 \
