@@ -2,7 +2,7 @@ CURRENT_DIR=`pwd`
 export BERT_BASE_DIR=$CURRENT_DIR/chinese-pert-base
 export DATA_DIR=$CURRENT_DIR/datasets
 export OUTPUR_DIR=$CURRENT_DIR/outputs
-TASK_NAME="punct"
+TASK_NAME="cner"
 #
 python run_ner_crf.py \
   --model_type=bert \
