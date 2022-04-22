@@ -130,7 +130,7 @@ def convert_examples_to_features(examples,label_list,max_seq_length,tokenizer,
         padding_length = max_seq_length - len(input_ids)
         if not len(input_ids) == len(input_mask) == len(segment_ids) == len(label_ids):
             print(tokens)
-            print(len(tokens), len(input_ids))
+            print(len(tokens), len(input_ids), len(label_ids))
         if pad_on_left:
             input_ids = ([pad_token] * padding_length) + input_ids
             input_mask = ([0 if mask_padding_with_zero else 1] * padding_length) + input_mask
@@ -142,10 +142,14 @@ def convert_examples_to_features(examples,label_list,max_seq_length,tokenizer,
             segment_ids += [pad_token_segment_id] * padding_length
             label_ids += [pad_token] * padding_length
 
-        assert len(input_ids) == max_seq_length
-        assert len(input_mask) == max_seq_length
-        assert len(segment_ids) == max_seq_length
-        assert len(label_ids) == max_seq_length
+        # assert len(input_ids) == max_seq_length
+        # assert len(input_mask) == max_seq_length
+        # assert len(segment_ids) == max_seq_length
+        # assert len(label_ids) == max_seq_length
+        if not len(input_ids) == len(input_mask) == len(segment_ids) == len(label_ids) == max_seq_length:
+            print('drop ... ' + example.text_a)
+            continue
+
         if ex_index < 5:
             logger.info("*** Example ***")
             logger.info("guid: %s", example.guid)
