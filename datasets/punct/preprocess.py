@@ -94,8 +94,7 @@ def preprocess(infile):
                 bmes = to_bmes(subline)
                 if bmes:
                     data.append(bmes+'\n')
-    print(lengths.items())
-    return data
+    return data, lengths
 
 
 def write(train, dev, test):
@@ -115,10 +114,17 @@ def split(data):
     return train, dev, test
 
 
-data = preprocess('白鹿原.txt')
+data, lengths = preprocess('白鹿原.txt')
 labels = Counter([i.split()[1] for line in data for i in line.split('\n') if i.strip()])
 train, dev, test = split(data)
 write(train, dev, test)
 
 print(labels)
 print(len(train), len(dev), len(test))
+
+
+import matplotlib.pyplot as plt
+lengths = sorted(lengths.items())
+plt.figure()
+plt.scatter(lengths.keys(), lengths.values())
+plt.show()

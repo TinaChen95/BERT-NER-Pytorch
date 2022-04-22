@@ -34,6 +34,10 @@ def train(args, train_dataset, model, tokenizer):
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
     train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.train_batch_size,
                                   collate_fn=collate_fn)
+    print('args.max_steps', args.max_steps)
+    print('len(train_dataloader)', len(train_dataloader))
+    print('args.gradient_accumulation_steps', args.gradient_accumulation_steps)
+    print('args.num_train_epochs', args.num_train_epochs)
     if args.max_steps > 0:
         t_total = args.max_steps
         args.num_train_epochs = args.max_steps // (len(train_dataloader) // args.gradient_accumulation_steps) + 1
@@ -341,6 +345,7 @@ def load_and_cache_examples(args, task, tokenizer, data_type='train'):
             examples = processor.get_dev_examples(args.data_dir)
         else:
             examples = processor.get_test_examples(args.data_dir)
+        print(args.data_dir, len(examples))
         features = convert_examples_to_features(examples=examples,
                                                 tokenizer=tokenizer,
                                                 label_list=label_list,
@@ -366,6 +371,7 @@ def load_and_cache_examples(args, task, tokenizer, data_type='train'):
     all_segment_ids = torch.tensor([f.segment_ids for f in features], dtype=torch.long)
     all_label_ids = torch.tensor([f.label_ids for f in features], dtype=torch.long)
     all_lens = torch.tensor([f.input_len for f in features], dtype=torch.long)
+    print(len(all_input_ids))
     dataset = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_lens, all_label_ids)
     return dataset
 
