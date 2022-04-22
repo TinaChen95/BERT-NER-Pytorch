@@ -198,6 +198,14 @@ class CnerProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, labels=labels))
         return examples
 
+
+class PunctProcessor(CnerProcessor):
+    def get_labels(self):
+        """See base class."""
+        return ["X",'B-：', 'B-…', 'O', 'B-book', 'M-book', 'B-；', 'B-，', 'B-。', 'B-！',
+                'E-book', 'B-、', 'B-？', "[START]", "[END]"]
+
+
 class CluenerProcessor(DataProcessor):
     """Processor for the chinese ner data set."""
 
@@ -236,5 +244,6 @@ class CluenerProcessor(DataProcessor):
 
 ner_processors = {
     "cner": CnerProcessor,
-    'cluener':CluenerProcessor
+    'cluener':CluenerProcessor,
+    'punct': PunctProcessor
 }
