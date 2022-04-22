@@ -87,9 +87,8 @@ def split(data):
 
 
 data = preprocess('白鹿原.txt')
-labels = {i.split()[1] for i in data if i.strip()}
+labels = {i.split()[1] for line in data for i in line.split('\n') if i.strip()}
 train, dev, test = split(data)
 write(train, dev, test)
 
 print(labels)
-

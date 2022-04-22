@@ -209,8 +209,8 @@ class CnerProcessor(DataProcessor):
 class PunctProcessor(CnerProcessor):
     def get_labels(self):
         """See base class."""
-        return ["X", 'O', 'B-pause', 'B-period', 'B-semicolon', 'B-question', 'B-exclamation',
-                'B-ellipsis', 'B-comma', "[START]", "[END]"]
+        return ["X", 'B-ellipsis', 'E-book', 'M-book', 'B-pause', 'O', 'B-question', 'B-semicolon',
+                'B-book', 'B-colon', 'B-comma', 'B-period', 'B-exclamation', "[START]", "[END]"]
 
     def _create_examples(self, lines, set_type):
         """Creates examples for the training and dev sets."""
