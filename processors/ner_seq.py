@@ -128,7 +128,9 @@ def convert_examples_to_features(examples,label_list,max_seq_length,tokenizer,
         input_len = len(label_ids)
         # Zero-pad up to the sequence length.
         padding_length = max_seq_length - len(input_ids)
-        print(len(input_ids), len(input_mask), len(segment_ids),len(label_ids))
+        if not len(input_ids) == len(input_mask) == len(segment_ids) == len(label_ids):
+            print(tokens)
+            print(len(tokens), len(input_ids))
         if pad_on_left:
             input_ids = ([pad_token] * padding_length) + input_ids
             input_mask = ([0 if mask_padding_with_zero else 1] * padding_length) + input_mask
