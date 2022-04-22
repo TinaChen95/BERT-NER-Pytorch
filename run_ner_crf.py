@@ -34,6 +34,7 @@ def train(args, train_dataset, model, tokenizer):
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
     train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.train_batch_size,
                                   collate_fn=collate_fn)
+    print('train_dataset', train_dataset)
     print('args.max_steps', args.max_steps)
     print('len(train_dataloader)', len(train_dataloader))
     print('args.gradient_accumulation_steps', args.gradient_accumulation_steps)

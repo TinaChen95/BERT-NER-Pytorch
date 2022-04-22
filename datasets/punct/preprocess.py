@@ -52,6 +52,8 @@ def to_bmes(text):
                 res += ['%s M-book\n' % w for w in words[1:-1]]
                 res.append('%s E-book\n' % words[-1])
         else:
+            if '《' in sent or '》' in sent:
+                print(sent)
             for word, symbol in re.findall('(\w)([^\w ]?)', sent):
                 if symbol:
                     res.append('%s B-%s\n' % (word, symbol2label[symbol]))
@@ -76,24 +78,35 @@ def generate_line(text, min_len=5, max_len=128):
     return text
 
 
+def clean_text(text):
+    text = re.sub('^[^《]*》', '', text)
+    text = re.sub('《[^》]*$', '', text)
+    return text
+
+
 def count_words(text):
     return len(re.findall('\w', text))
+
+
+def generate_text(text, window_size=20):
+    for start in range(window_size):
+        for i in range(start, len(text) + window_size, window_size):
+            yield text[i: i+window_size]
 
 
 def preprocess(infile):
     data = []
     lengths = Counter()
     with open(infile, 'r', encoding='utf8') as f:
-        for line in f.readlines():
-            if count_words(line) < 10:
-                continue
-            nsamples = int(len(line) / 50) + 1
-            for _ in range(nsamples):
-                subline = generate_line(line)
+        for subline in generate_text(symbol_process(f.read())):
+            try:
+                subline = clean_text(subline)
                 lengths[len(subline)] += 1
                 bmes = to_bmes(subline)
                 if bmes:
                     data.append(bmes+'\n')
+            except:
+                print(subline, clean_text(subline))
     return data, lengths
 
 
@@ -123,8 +136,8 @@ print(labels)
 print(len(train), len(dev), len(test))
 
 
-import matplotlib.pyplot as plt
-lengths = sorted(lengths.items())
-plt.figure()
-plt.scatter(lengths.keys(), lengths.values())
-plt.show()
+# import matplotlib.pyplot as plt
+# lengths = sorted(lengths.items())
+# plt.figure()
+# plt.scatter(lengths.keys(), lengths.values())
+# plt.show()
