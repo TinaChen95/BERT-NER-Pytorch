@@ -7,6 +7,10 @@ import random
 valid_symbols_re = re.compile('[\w，。：！？…；、《》]')
 invalid_symbols_re = re.compile('[^\w，。：！？…；、《》]')
 
+symbols = '，。：！？…；、'
+labels = 'comma, period, colon, exclamation, question, ellipsis, semicolon, pause'.split(', ')
+symbol2label = dict(zip(symbols, labels))
+
 
 def symbol_process(text):
     text = re.sub('\(.*?\)', '', text)
@@ -49,7 +53,7 @@ def to_bmes(text):
         else:
             for word, symbol in re.findall('(\w)([^\w ]?)', sent):
                 if symbol:
-                    res.append('%s B-%s\n' % (word, symbol))
+                    res.append('%s B-%s\n' % (word, symbol2label[symbol]))
                 else:
                     res.append('%s O\n' % word)
     return ''.join(res)
@@ -83,8 +87,9 @@ def split(data):
 
 
 data = preprocess('白鹿原.txt')
+labels = {i.split()[1] for i in data if i.strip()}
 train, dev, test = split(data)
 write(train, dev, test)
 
-
+print(labels)
 
